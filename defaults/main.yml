@@ -1,0 +1,18 @@
+---
+# defaults file for vlan
+
+# vlan: []
+
+# Example:
+vlan:
+  - pvid: 5
+    ifname: eth0
+    mode: dhcp
+  - pvid: 10
+    ifname: eth0
+    mode: manual
+    ip: "10.0.0.1/24"
+    gw: "10.0.0.250"
+    dns:
+      - "1.1.1.1"
+      - "9.9.9.9"

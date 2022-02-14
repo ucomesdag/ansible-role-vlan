@@ -1,0 +1,12 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: Uco Mesdag
+  description: Configure vlan on nic.
+  company: none
+  license: license (BSD, MIT)
+  min_ansible_version: "2.10"
+  galaxy_tags:
+    - vlan
+    - network

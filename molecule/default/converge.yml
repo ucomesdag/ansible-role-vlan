@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: "Include ansible-role-vlan"
+      ansible.builtin.include_role:
+        name: "ansible-role-vlan"

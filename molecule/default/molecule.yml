@@ -1,0 +1,30 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  ansible-later
+driver:
+  name: podman
+platforms:
+  - name: "molecule_test-${image:-fedora}-${tag:-latest}${TOX_SEPARATOR}${TOX_ENVNAME}"
+    image: "quay.io/${namespace:-ucomesdag}/${image:-fedora}:${tag:-latest}"
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: yes
+    pre_build_image: yes
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: yaml
+      bin_ansible_callbacks: yes
+verifier:
+  name: ansible
