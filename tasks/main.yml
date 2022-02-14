@@ -1,0 +1,39 @@
+---
+# tasks file for vlan
+
+- name: Install vlan package
+  ansible.builtin.package:
+    name: vlan
+    state: present
+
+- name: Create file /etc/network/interfaces.d/vlans
+  ansible.builtin.file:
+    path: /etc/network/interfaces.d/vlans
+    state: touch
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Add vlan
+  ansible.builtin.blockinfile:
+    path: /etc/network/interfaces.d/vlans
+    block: |
+      auto {{ item.ifname }}.{{ item.pvid }}
+      iface {{ item.ifname }}.{{ item.pvid }} inet manual
+        vlan-raw-device {{ item.ifname }}
+    marker: "# {mark} VLAN {{ item.pvid }}"
+  loop: "{{ vlan }}"
+  notify: restart_networking
+
+- name: Set static IP for vlan
+  ansible.builtin.blockinfile:
+    path: /etc/dhcpcd.conf
+    block: |
+      interface {{ item.ifname }}.{{ item.pvid }}
+      static ip_address={{ item.ip }}
+      static routers={{ item.gw }}
+      static domain_name_servers={{ item.dns | join(' ') }}
+    marker: "# {mark} VLAN {{ item.pvid }}"
+  loop: "{{ vlan }}"
+  when: item.mode == "manual"
+  notify: restart_networking

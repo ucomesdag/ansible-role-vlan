@@ -1,0 +1,5 @@
+---
+repository:
+  description: Configure vlan on nic.
+  homepage: https://mesd.ag/
+  topics: ansible, role, vlan
