@@ -1,0 +1,6 @@
+{% for vlan in vlans %}
+auto {{ vlan.device }}.{{ vlan.id }}
+iface {{ vlan.device }}.{{ vlan.id }} inet dhcp
+  vlan-raw-device {{ vlan.device }}
+
+{% endfor %}

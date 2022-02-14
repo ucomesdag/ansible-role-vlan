@@ -1,0 +1,7 @@
+---
+# defaults file for vlan
+vlans:
+  - device: eth0
+    id: 10
+  - device: eth0
+    id: 20

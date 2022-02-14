@@ -1,0 +1,45 @@
+---
+# tasks file for vlan
+- name: Install vlan package
+  ansible.builtin.package:
+    name:
+      - vlan
+    state: present
+
+- name: Setup vlans
+  ansible.builtin.template:
+    src: vlans.j2
+    dest: /etc/network/interfaces.d/vlans
+    mode: "0644"
+
+- name: Bring vlans up
+  ansible.builtin.command:
+    cmd: ifup "{{ item.device }}.{{ item.id }}"
+  loop: "{{ vlans }}"
+  changed_when: false
+
+- name: Make sure firewalld is installed
+  ansible.builtin.package:
+    name: firewalld
+    state: present
+
+- name: Start and enable firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Get current firewall zone
+  ansible.posix.firewalld_info:
+    active_zones: true
+  register: result
+
+- name: Add vlans to default zone
+  ansible.posix.firewalld:
+    zone: "{{ result.firewalld_info.default_zone }}"
+    interface: "{{ item.device }}.{{ item.id }}"
+    permanent: true
+    state: enabled
+  loop: "{{ vlans }}"
+  notify:
+    - restart_firewalld
