@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include vlan"
+    - name: Include vlan
       include_role:
-        name: "vlan"
+        name: vlan
